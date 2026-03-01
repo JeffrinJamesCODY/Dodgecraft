@@ -1,6 +1,7 @@
-import pygame
-import sys
 import random
+import sys
+
+import pygame
 
 # -------- INITIALISE --------
 pygame.init()
@@ -47,13 +48,12 @@ game_bg = pygame.image.load("resourcepack/nether.png").convert()
 game_bg = pygame.transform.scale(game_bg, (WIDTH, HEIGHT))
 
 steve = pygame.image.load("resourcepack/steve02.png").convert_alpha()
-steve = pygame.transform.scale(steve, (80, 80))
 steve_rect = steve.get_rect(center=(WIDTH // 2, HEIGHT - 120))
 
 mob_img = pygame.image.load("resourcepack/Warden02.png").convert_alpha()
 mob_img = pygame.transform.scale(mob_img, (70, 70))
 
-heart_img = pygame.image.load("resourcepack/heart02.png").convert_alpha()
+heart_img = pygame.image.load("resourcepack/heart01.png").convert_alpha()
 heart_img = pygame.transform.scale(heart_img, (40, 40))
 
 # -------- LOAD MUSIC --------
@@ -114,9 +114,9 @@ while running:
         if game_state == "playing":
             
             keys = pygame.key.get_pressed()
-            if keys[pygame.K_LEFT]:
+            if keys[pygame.K_LEFT] or keys[pygame.K_a]:
                 steve_rect.x -= player_speed
-            if keys[pygame.K_RIGHT]:
+            if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
                 steve_rect.x += player_speed
 
             steve_rect.x = max(0, min(WIDTH - steve_rect.width, steve_rect.x))
@@ -149,8 +149,6 @@ while running:
     if game_state == "menu":
         # Always draw background first
         screen.blit(menu_bg, (0, 0))
-
-        # Draw logo
         screen.blit(logo, logo_rect)
 
         # Hover effect
@@ -169,6 +167,19 @@ while running:
                 screen.blit(hover_img, hover_rect)
             else:
                 screen.blit(img, rect)
+
+    elif game_state == "playing":
+        screen.blit(game_bg, (0,0))
+        screen.blit(steve, steve_rect)
+
+        for mob in mobs:
+            screen.blit(mob_img, mob)
+
+        for i in range(health):
+            screen.blit(heart_img, (20 + i * 50, 20))
+
+        score_text = font.render(f"score: {score}", True, (255, 255, 255))
+        screen.blit(score_text, (WIDTH - 200, 20))
 
     pygame.display.flip()
 
